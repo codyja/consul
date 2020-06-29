@@ -34,7 +34,7 @@ import (
 )
 
 // listenersFromSnapshot returns the xDS API representation of the "listeners" in the snapshot.
-func (s *Server) listenersFromSnapshot(cfgSnap *proxycfg.ConfigSnapshot, token string) ([]proto.Message, error) {
+func (s *Server) listenersFromSnapshot(cfgSnap *proxycfg.ConfigSnapshot, token string, _ supportedProxyFeatures) ([]proto.Message, error) {
 	if cfgSnap == nil {
 		return nil, errors.New("nil config given")
 	}
