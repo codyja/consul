@@ -16,13 +16,14 @@ func TestEnvoy(t *testing.T) {
 		// "case-cfg-resolver-dc-failover-gateways-none",
 		// "case-cfg-resolver-dc-failover-gateways-remote",
 		// "case-cfg-resolver-defaultsubset",
+		"case-cfg-resolver-features",
 		// "case-cfg-resolver-subset-onlypassing",
 		// "case-cfg-resolver-subset-redirect",
 		// "case-cfg-resolver-svc-failover",
 		// "case-cfg-resolver-svc-redirect-http",
 		// "case-cfg-resolver-svc-redirect-tcp",
-		// "case-cfg-router-features",
-		// "case-cfg-splitter-features",
+		"case-cfg-router-features",
+		"case-cfg-splitter-features",
 		// "case-consul-exec",
 		// "case-dogstatsd-udp",
 		// "case-gateways-local",
@@ -46,7 +47,6 @@ func TestEnvoy(t *testing.T) {
 		// "case-upstream-config",
 		// "case-wanfed-gw",
 		// "case-zipkin",
-		"case-cfg-resolver-features",
 	}
 
 	runCmd(t, "suite_setup")
