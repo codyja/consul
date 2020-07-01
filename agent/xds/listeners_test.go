@@ -455,7 +455,7 @@ func TestListenersFromSnapshot(t *testing.T) {
 				Logger: logger,
 			}
 
-			listeners, err := s.listenersFromSnapshot(snap, "my-token")
+			listeners, err := s.listenersFromSnapshot(snap, "my-token", allSupportedProxyFeatures())
 			sort.Slice(listeners, func(i, j int) bool {
 				return listeners[i].(*envoy.Listener).Name < listeners[j].(*envoy.Listener).Name
 			})

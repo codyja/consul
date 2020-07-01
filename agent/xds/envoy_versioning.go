@@ -2,6 +2,7 @@ package xds
 
 import (
 	"fmt"
+	"regexp"
 
 	envoy "github.com/envoyproxy/go-control-plane/envoy/api/v2"
 	envoycore "github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
@@ -9,7 +10,10 @@ import (
 )
 
 var (
-	minSafeRegexVersion = version.Must(version.NewVersion("1.12.0"))
+	// minSafeRegexVersion reflects the minimum version where we could use safe_regex instead of regex
+	//
+	// NOTE: the first version that no longer supported the old style was 1.13.0
+	minSafeRegexVersion = version.Must(version.NewVersion("1.11.2"))
 )
 
 type supportedProxyFeatures struct {
@@ -27,16 +31,35 @@ func determineSupportedProxyFeatures(req *envoy.DiscoveryRequest) supportedProxy
 	}
 }
 
+// example: 1580db37e9a97c37e410bad0e1507ae1a0fd9e77/1.12.4/Clean/RELEASE/BoringSSL
+var buildVersionPattern = regexp.MustCompile(`^[a-f0-9]{40}/([^/]+)/Clean/RELEASE/BoringSSL$`)
+
 func determineEnvoyVersion(req *envoy.DiscoveryRequest) *version.Version {
-	node := req.Node
+	return determineEnvoyVersionFromNode(req.Node)
+}
+
+func determineEnvoyVersionFromNode(node *envoycore.Node) *version.Version {
+	if node.UserAgentVersionType == nil {
+		if node.BuildVersion == "" {
+			return nil
+		}
+		// Must be an older pre-1.13 envoy
+
+		// FindStringSubmatch returns a slice of strings holding the text of the
+		// leftmost match of the regular expression in s and the matches, if any, of
+		// its subexpressions, as defined by the 'Submatch' description in the
+		// package comment.
+		// func (re *Regexp) FindStringSubmatch(s string) []string {
+
+		m := buildVersionPattern.FindStringSubmatch(node.BuildVersion)
+		if m == nil {
+			return nil
+		}
+
+		return version.Must(version.NewVersion(m[1]))
+	}
 
 	if node.UserAgentName != "envoy" {
-		return nil
-	}
-	// TODO: check that UserAgentName == "envoy"?
-
-	if node.UserAgentVersionType == nil {
-		// TODO: check BuildVersion?
 		return nil
 	}
 
@@ -57,5 +80,4 @@ func determineEnvoyVersion(req *envoy.DiscoveryRequest) *version.Version {
 			v.GetPatch(),
 		),
 	))
-
 }

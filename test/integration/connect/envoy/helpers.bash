@@ -153,6 +153,14 @@ function assert_envoy_version {
   echo $VERSION | grep "/$ENVOY_VERSION/"
 }
 
+function get_envoy_node_version {
+  local HOSTPORT=$1
+  run retry_default curl -s -f $HOSTPORT/config_dump
+  [ "$status" -eq 0 ]
+  # echo $output | jq --raw-output '.configs[0].bootstrap.node.user_agent_build_version.version | "\(.major_number).\(.minor_number).\(.patch)"'
+  echo $output | jq --raw-output '.configs[0].bootstrap.node | { "uabv": .user_agent_build_version, "bv": .build_version, "uav": .user_agent_version }'
+}
+
 function get_envoy_listener_filters {
   local HOSTPORT=$1
   run retry_default curl -s -f $HOSTPORT/config_dump

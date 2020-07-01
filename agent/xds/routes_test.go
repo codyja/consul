@@ -187,7 +187,7 @@ func TestRoutesFromSnapshot(t *testing.T) {
 				tt.setup(snap)
 			}
 
-			routes, err := routesFromSnapshot(snap, "my-token")
+			routes, err := routesFromSnapshot(snap, "my-token", allSupportedProxyFeatures())
 			require.NoError(err)
 			sort.Slice(routes, func(i, j int) bool {
 				return routes[i].(*envoy.RouteConfiguration).Name < routes[j].(*envoy.RouteConfiguration).Name

@@ -549,7 +549,7 @@ func TestClustersFromSnapshot(t *testing.T) {
 				Logger: logger,
 			}
 
-			clusters, err := s.clustersFromSnapshot(snap, "my-token")
+			clusters, err := s.clustersFromSnapshot(snap, "my-token", allSupportedProxyFeatures())
 			require.NoError(err)
 			sort.Slice(clusters, func(i, j int) bool {
 				return clusters[i].(*envoy.Cluster).Name < clusters[j].(*envoy.Cluster).Name
@@ -726,5 +726,11 @@ func setupTLSRootsAndLeaf(t *testing.T, snap *proxycfg.ConfigSnapshot) {
 	}
 	if snap.Roots != nil {
 		snap.Roots.Roots[0].RootCert = golden(t, "test-root-cert", "")
+	}
+}
+
+func allSupportedProxyFeatures() supportedProxyFeatures {
+	return supportedProxyFeatures{
+		RouterMatchSafeRegex: true,
 	}
 }
