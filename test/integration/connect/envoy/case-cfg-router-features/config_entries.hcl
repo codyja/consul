@@ -47,8 +47,7 @@ config_entries {
       },
       {
         match { http {
-          # path_regex = "/deb[ug]"
-          path_exact = "/debug"
+          path_regex = "/deb[ug]{2}"
           header = [{
             name    = "x-test-debug"
             present = true
@@ -60,68 +59,121 @@ config_entries {
           retry_on_status_codes    = [500, 512] # TODO: test
         }
       },
-      # TODO: test remainder
-      # {
-      #   match { http { header = [
-      #     {
-      #       name    = "foo0"
-      #       present = true
-      #     },
-      #     {
-      #       name  = "foo1"
-      #       exact = "exact"
-      #     },
-      #     {
-      #       name   = "foo2"
-      #       prefix = "prefix"
-      #     },
-      #     {
-      #       name   = "foo3"
-      #       suffix = "suffix"
-      #     },
-      #     {
-      #       name  = "foo4"
-      #       regex = "regex"
-      #     },
-      #     {
-      #       name   = "foo5"
-      #       exact  = "exact"
-      #       invert = true
-      #     },
-      #   ] } }
-      #   destination {
-      #     service_subset = "v2"
-      #   }
-      # },
-      # {
-      #   match { http {
-      #     query_param = [
-      #       {
-      #         name    = "foo0"
-      #         present = true
-      #       },
-      #       {
-      #         name  = "foo1"
-      #         exact = "exact"
-      #       },
-      #       {
-      #         name  = "foo2"
-      #         regex = "regex"
-      #       },
-      #     ]
-      #   } }
-      #   destination {
-      #     service_subset = "v2"
-      #   }
-      # },
-      # {
-      #   match { http {
-      #     methods = ["put", "delete"]
-      #   } }
-      #   destination {
-      #     service_subset = "v2"
-      #   }
-      # },
+      {
+        match { http { header = [
+          {
+            name  = "x-test-debug"
+            exact = "exact"
+          },
+        ] } },
+        destination {
+          service_subset = "v2"
+        }
+      },
+      {
+        match { http { header = [
+          {
+            name   = "x-test-debug"
+            prefix = "prefi"
+          },
+        ] } },
+        destination {
+          service_subset = "v2"
+        }
+      },
+      {
+        match { http { header = [
+          {
+            name   = "x-test-debug"
+            prefix = "uffix"
+          },
+        ] } },
+        destination {
+          service_subset = "v2"
+        }
+      },
+      {
+        match { http { header = [
+          {
+            name  = "x-test-debug"
+            regex = "reg[ex]{2}"
+          },
+        ] } },
+        destination {
+          service_subset = "v2"
+        }
+      },
+      {
+        match { http {
+          path_exact = "/hdr-invert/debug"
+          header = [
+            {
+              name   = "x-test-debug"
+              exact  = "not-this"
+              invert = true
+            },
+          ],
+        } },
+        destination {
+          service_subset = "v2"
+          prefix_rewrite = "/debug"
+        }
+      },
+      {
+        match { http {
+          path_exact = "/qp-present/debug"
+          query_param = [
+            {
+              name    = "env"
+              present = true
+            },
+          ],
+        } },
+        destination {
+          service_subset = "v2"
+          prefix_rewrite = "/debug"
+        }
+      },
+      {
+        match { http {
+          path_exact = "/qp-exact/debug"
+          query_param = [
+            {
+              name  = "env"
+              exact = "dump"
+            },
+          ],
+        } },
+        destination {
+          service_subset = "v2"
+          prefix_rewrite = "/debug"
+        }
+      },
+      {
+        match { http {
+          path_exact = "/qp-regex/debug"
+          query_param = [
+            {
+              name  = "env"
+              regex = "du[mp]{2}"
+            },
+          ],
+        } },
+        destination {
+          service_subset = "v2"
+          prefix_rewrite = "/debug"
+        }
+      },
+      {
+        match { http {
+          path_exact = "/method-match/debug"
+          methods    = ["GET", "PUT"]
+        } },
+        destination {
+          service_subset = "v2"
+          prefix_rewrite = "/debug"
+        }
+      },
     ]
   }
 }
