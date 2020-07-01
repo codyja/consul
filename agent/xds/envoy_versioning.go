@@ -45,12 +45,6 @@ func determineEnvoyVersionFromNode(node *envoycore.Node) *version.Version {
 		}
 		// Must be an older pre-1.13 envoy
 
-		// FindStringSubmatch returns a slice of strings holding the text of the
-		// leftmost match of the regular expression in s and the matches, if any, of
-		// its subexpressions, as defined by the 'Submatch' description in the
-		// package comment.
-		// func (re *Regexp) FindStringSubmatch(s string) []string {
-
 		m := buildVersionPattern.FindStringSubmatch(node.BuildVersion)
 		if m == nil {
 			return nil
