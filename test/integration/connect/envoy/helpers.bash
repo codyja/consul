@@ -157,7 +157,6 @@ function get_envoy_node_version {
   local HOSTPORT=$1
   run retry_default curl -s -f $HOSTPORT/config_dump
   [ "$status" -eq 0 ]
-  # echo $output | jq --raw-output '.configs[0].bootstrap.node.user_agent_build_version.version | "\(.major_number).\(.minor_number).\(.patch)"'
   echo $output | jq --raw-output '.configs[0].bootstrap.node | { "uabv": .user_agent_build_version, "bv": .build_version, "uav": .user_agent_version }'
 }
 
@@ -701,7 +700,6 @@ function assert_expected_fortio_name {
   fi
 }
 
-# if [[ "bar" =~ ^foo|bar$ ]]; then echo a; else echo b; fi
 function assert_expected_fortio_name_pattern {
   local EXPECT_NAME_PATTERN=$1
   local HOST=${2:-"localhost"}
