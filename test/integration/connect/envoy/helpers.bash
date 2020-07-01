@@ -692,3 +692,21 @@ function assert_expected_fortio_name {
     return 1
   fi
 }
+
+# if [[ "bar" =~ ^foo|bar$ ]]; then echo a; else echo b; fi
+function assert_expected_fortio_name_pattern {
+  local EXPECT_NAME_PATTERN=$1
+  local HOST=${2:-"localhost"}
+  local PORT=${3:-5000}
+  local URL_PREFIX=${4:-""}
+  local DEBUG_HEADER_VALUE="${5:-""}"
+
+  GOT=$(get_upstream_fortio_name ${HOST} ${PORT} "${URL_PREFIX}" "${DEBUG_HEADER_VALUE}")
+
+  if [[ "$GOT" =~ $EXPECT_NAME_PATTERN ]]; then
+      :
+  else
+    echo "expected name pattern: $EXPECT_NAME_PATTERN, actual name: $GOT" 1>&2
+    return 1
+  fi
+}

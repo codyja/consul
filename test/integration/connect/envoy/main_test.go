@@ -21,6 +21,7 @@ func TestEnvoy(t *testing.T) {
 		// "case-cfg-resolver-svc-failover",
 		// "case-cfg-resolver-svc-redirect-http",
 		// "case-cfg-resolver-svc-redirect-tcp",
+		// "case-cfg-router-features",
 		// "case-consul-exec",
 		// "case-dogstatsd-udp",
 		// "case-gateways-local",
@@ -44,7 +45,7 @@ func TestEnvoy(t *testing.T) {
 		// "case-upstream-config",
 		// "case-wanfed-gw",
 		// "case-zipkin",
-		"case-cfg-router-features",
+		"case-cfg-splitter-features",
 	}
 
 	runCmd(t, "suite_setup")
